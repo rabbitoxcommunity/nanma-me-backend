@@ -19,12 +19,14 @@ const PROJECT_FIELDS = [
   "videoUrl",
   "amenities",
   "specifications",
+  "connectivity",
   "mapEmbed",
   "metaTitle",
   "metaDescription",
   "keywords",
   "isPublished",
   "featured",
+  "inBanner",
 ];
 
 function pickBody(body) {
@@ -46,15 +48,19 @@ function pickBody(body) {
   if (typeof out.specifications === "string") {
     try { out.specifications = JSON.parse(out.specifications); } catch { /* ignore */ }
   }
+  if (typeof out.connectivity === "string") {
+    try { out.connectivity = JSON.parse(out.connectivity); } catch { /* ignore */ }
+  }
   return out;
 }
 
 // ─── Public ────────────────────────────────────────────
 exports.list = async (req, res) => {
-  const { status, featured, limit = 50, page = 1, q } = req.query;
+  const { status, featured, banner, limit = 50, page = 1, q } = req.query;
   const filter = { isPublished: true };
   if (status && status !== "all") filter.status = status;
   if (featured === "true") filter.featured = true;
+  if (banner === "true") filter.inBanner = true;
   if (q) filter.$text = { $search: q };
 
   const lim = Math.min(parseInt(limit, 10) || 50, 100);
@@ -111,9 +117,9 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   const data = pickBody(req.body);
 
-  // Optional: replace media via separate fields when sent as JSON
-  if (req.body.featuredImage !== undefined) data.featuredImage = req.body.featuredImage;
-  if (req.body.galleryImages !== undefined) data.galleryImages = req.body.galleryImages;
+  // Media (featuredImage, galleryImages) is intentionally NOT updatable via this
+  // endpoint — it would let a stale frontend wipe out freshly uploaded files.
+  // Use the dedicated upload routes instead.
 
   const project = await Project.findById(req.params.id);
   if (!project) return res.status(404).json({ error: "Not found" });

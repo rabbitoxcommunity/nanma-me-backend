@@ -21,6 +21,15 @@ const specSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const connectivitySchema = new mongoose.Schema(
+  {
+    label: { type: String, required: true, trim: true }, // "Airport"
+    value: { type: String, default: "", trim: true },     // "12 km"
+    time: { type: String, default: "", trim: true },      // "~22 min"
+  },
+  { _id: false }
+);
+
 const mediaAssetSchema = new mongoose.Schema(
   {
     url: { type: String, required: true },
@@ -69,6 +78,7 @@ const projectSchema = new mongoose.Schema(
     // Repeater fields
     amenities: { type: [amenitySchema], default: [] },
     specifications: { type: [specSchema], default: [] },
+    connectivity: { type: [connectivitySchema], default: [] },
 
     // Map (optional)
     mapEmbed: { type: String, default: "" },
@@ -81,6 +91,7 @@ const projectSchema = new mongoose.Schema(
     // Visibility
     isPublished: { type: Boolean, default: true, index: true },
     featured: { type: Boolean, default: false, index: true },
+    inBanner: { type: Boolean, default: false, index: true },
 
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
   },
