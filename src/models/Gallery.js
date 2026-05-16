@@ -20,6 +20,7 @@ const gallerySchema = new mongoose.Schema(
     aspect: { type: String, enum: ["tall", "wide", "square"], default: "wide" },
     sortOrder: { type: Number, default: 0, index: true },
     isPublished: { type: Boolean, default: true, index: true },
+    showOnHome: { type: Boolean, default: false, index: true },
   },
   { timestamps: true }
 );
