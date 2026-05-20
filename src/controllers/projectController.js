@@ -8,6 +8,7 @@ const PROJECT_FIELDS = [
   "location",
   "status",
   "propertyType",
+  "propertyTypeOther",
   "sqft",
   "bhk",
   "developmentSize",

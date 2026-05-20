@@ -57,6 +57,8 @@ const projectSchema = new mongoose.Schema(
       index: true,
     },
     propertyType: { type: String, enum: PROPERTY_TYPES, default: "Apartment" },
+    // Free-text override when `propertyType === "Other"`
+    propertyTypeOther: { type: String, default: "", trim: true },
 
     // Specs / sizing
     sqft: { type: String, default: "" },           // e.g. "1,840 – 4,200"
