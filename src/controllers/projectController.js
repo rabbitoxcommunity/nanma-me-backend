@@ -21,6 +21,7 @@ const PROJECT_FIELDS = [
   "amenities",
   "specifications",
   "connectivity",
+  "inventory",
   "mapEmbed",
   "metaTitle",
   "metaDescription",
@@ -51,6 +52,9 @@ function pickBody(body) {
   }
   if (typeof out.connectivity === "string") {
     try { out.connectivity = JSON.parse(out.connectivity); } catch { /* ignore */ }
+  }
+  if (typeof out.inventory === "string") {
+    try { out.inventory = JSON.parse(out.inventory); } catch { /* ignore */ }
   }
   return out;
 }

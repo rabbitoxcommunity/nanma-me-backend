@@ -30,6 +30,27 @@ const connectivitySchema = new mongoose.Schema(
   { _id: false }
 );
 
+const UNIT_STATUSES = ["available", "booked", "sold", "blocked"];
+const unitSchema = new mongoose.Schema(
+  {
+    unitNumber: { type: String, required: true, trim: true }, // "A-301" or "Villa 4"
+    tower: { type: String, default: "", trim: true },
+    floor: { type: String, default: "", trim: true },
+    type: { type: String, default: "", trim: true },           // "3 BHK", "Penthouse"
+    carpetArea: { type: String, default: "", trim: true },     // "1,840 sq.ft"
+    builtupArea: { type: String, default: "", trim: true },
+    price: { type: String, default: "", trim: true },
+    facing: { type: String, default: "", trim: true },
+    view: { type: String, default: "", trim: true },
+    status: {
+      type: String,
+      enum: UNIT_STATUSES,
+      default: "available",
+    },
+  },
+  { _id: false }
+);
+
 const mediaAssetSchema = new mongoose.Schema(
   {
     url: { type: String, required: true },
@@ -81,6 +102,7 @@ const projectSchema = new mongoose.Schema(
     amenities: { type: [amenitySchema], default: [] },
     specifications: { type: [specSchema], default: [] },
     connectivity: { type: [connectivitySchema], default: [] },
+    inventory: { type: [unitSchema], default: [] },
 
     // Map (optional)
     mapEmbed: { type: String, default: "" },
@@ -124,3 +146,4 @@ projectSchema.pre("validate", async function () {
 module.exports = mongoose.model("Project", projectSchema);
 module.exports.PROJECT_STATUSES = PROJECT_STATUSES;
 module.exports.PROPERTY_TYPES = PROPERTY_TYPES;
+module.exports.UNIT_STATUSES = UNIT_STATUSES;
