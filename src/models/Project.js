@@ -97,6 +97,7 @@ const projectSchema = new mongoose.Schema(
     featuredImage: { type: mediaAssetSchema, default: null },
     galleryImages: { type: [mediaAssetSchema], default: [] },
     videoUrl: { type: String, default: "" }, // YouTube embed/URL
+    uploadedVideo: { type: mediaAssetSchema, default: undefined }, // uploaded video file
 
     // Repeater fields
     amenities: { type: [amenitySchema], default: [] },

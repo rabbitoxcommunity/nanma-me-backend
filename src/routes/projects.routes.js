@@ -1,7 +1,7 @@
 const express = require("express");
 const ctrl = require("../controllers/projectController");
 const { requireAuth } = require("../middleware/auth");
-const { uploadImage } = require("../middleware/upload");
+const { uploadImage, uploadVideo } = require("../middleware/upload");
 
 const router = express.Router();
 
@@ -30,5 +30,7 @@ router.post(
   ctrl.addGalleryImages
 );
 router.delete("/:id/gallery/:publicId", requireAuth, ctrl.removeGalleryImage);
+router.post("/:id/video", requireAuth, uploadVideo.single("file"), ctrl.setProjectVideo);
+router.delete("/:id/video", requireAuth, ctrl.removeProjectVideo);
 
 module.exports = router;

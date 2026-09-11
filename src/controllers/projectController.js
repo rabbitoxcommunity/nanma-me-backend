@@ -142,6 +142,7 @@ exports.remove = async (req, res) => {
   const ids = [
     project.featuredImage?.publicId,
     ...(project.galleryImages || []).map((g) => g.publicId),
+    project.uploadedVideo?.publicId,
   ].filter(Boolean);
   for (const id of ids) {
     try { await cloudinary.uploader.destroy(id); } catch { /* ignore */ }
@@ -197,4 +198,36 @@ exports.removeGalleryImage = async (req, res) => {
   try { await cloudinary.uploader.destroy(publicId); } catch { /* ignore */ }
   await project.save();
   res.json(project.galleryImages);
+};
+
+// POST /api/admin/projects/:id/video  (form-data: file)
+exports.setProjectVideo = async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  const project = await Project.findById(req.params.id);
+  if (!project) return res.status(404).json({ error: "Not found" });
+
+  // Remove old video from Cloudinary
+  if (project.uploadedVideo?.publicId) {
+    try { await cloudinary.uploader.destroy(project.uploadedVideo.publicId, { resource_type: "video" }); } catch { /* ignore */ }
+  }
+  project.uploadedVideo = {
+    url: req.file.path,
+    publicId: req.file.filename,
+    alt: project.name,
+  };
+  await project.save();
+  res.json(project.uploadedVideo);
+};
+
+// DELETE /api/admin/projects/:id/video
+exports.removeProjectVideo = async (req, res) => {
+  const project = await Project.findById(req.params.id);
+  if (!project) return res.status(404).json({ error: "Not found" });
+
+  if (project.uploadedVideo?.publicId) {
+    try { await cloudinary.uploader.destroy(project.uploadedVideo.publicId, { resource_type: "video" }); } catch { /* ignore */ }
+  }
+  project.uploadedVideo = undefined;
+  await project.save();
+  res.json({ ok: true });
 };
