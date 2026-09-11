@@ -30,7 +30,7 @@ router.post(
   ctrl.addGalleryImages
 );
 router.delete("/:id/gallery/:publicId", requireAuth, ctrl.removeGalleryImage);
-router.post("/:id/video", requireAuth, uploadVideo.single("file"), ctrl.setProjectVideo);
-router.delete("/:id/video", requireAuth, ctrl.removeProjectVideo);
+router.post("/:id/videos", requireAuth, uploadVideo.array("files", 10), ctrl.addProjectVideos);
+router.delete("/:id/videos/:publicId", requireAuth, ctrl.removeProjectVideo);
 
 module.exports = router;
